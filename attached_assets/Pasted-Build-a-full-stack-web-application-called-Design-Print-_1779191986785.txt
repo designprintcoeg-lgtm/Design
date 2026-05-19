@@ -1,0 +1,252 @@
+Build a full-stack web application called “Design Print Production Tracker”.
+
+Goal:
+A production management and tracking system for a printing and packaging company with multiple production lines:
+1. Offset Printing
+2. Silk Screen Printing
+3. Plastic Bags
+4. Corrugated Carton
+5. Flowpack
+
+Tech Stack:
+- Frontend: React + TypeScript + Tailwind CSS
+- Backend: Node.js + Express
+- Database: PostgreSQL
+- ORM: Prisma
+- Authentication: role-based login
+- Responsive dashboard for desktop and tablet
+
+Main Modules:
+
+1. Authentication & Roles
+Create users with roles:
+- Admin
+- Sales
+- Operations
+- Designer
+- Finalizer
+- Production Manager
+- Machine Operator
+- QC
+- Warehouse
+- Finance
+- Delivery
+
+Each role should have different permissions.
+
+2. Customers
+Fields:
+- Customer name
+- Company name
+- Phone
+- WhatsApp
+- Email
+- Address
+- Customer type
+- Source
+- Notes
+
+3. Quotations
+Create quotation linked to customer.
+Fields:
+- Quotation number
+- Customer
+- Product type
+- Quantity
+- Unit price
+- Total price
+- Payment terms
+- Delivery date
+- Status: Draft, Sent, Approved, Rejected
+
+When quotation is approved, allow converting it to Sales Order.
+
+4. Sales Orders
+Fields:
+- Sales order number
+- Customer
+- Quotation reference
+- Product type
+- Quantity
+- Delivery date
+- Payment status
+- Order status
+
+When sales order is confirmed, generate a Job Order.
+
+5. Job Order / Job Ticket
+This is the core of the app.
+Each job should have:
+- Job number
+- Customer
+- Product type
+- Production line
+- Quantity ordered
+- Design file status
+- Required delivery date
+- Priority: Normal, Urgent, Very Urgent
+- Current stage
+- Assigned department
+- Assigned person
+- Status: Pending, In Progress, On Hold, Completed, Delivered, Cancelled
+- Notes
+- QR code / barcode placeholder
+
+6. Dynamic Production Workflows
+Create predefined workflows depending on production line.
+
+Offset Printing workflow:
+Design → Finalizer → CTP → Printing → Drying → Cutting → Folding → Gluing → QC → Packing → Delivery
+
+Silk Screen workflow:
+Design → Film → Screen Exposure → Ink Mixing → Printing → Drying/UV → QC → Packing → Delivery
+
+Plastic Bags workflow:
+Design → Cylinder → Extrusion → Printing → Cutting → Sealing → QC → Packing → Delivery
+
+Corrugated Carton workflow:
+Structure Design → Offset Printing → Lamination → Die Cutting → Gluing → QC → Packing → Delivery
+
+Flowpack workflow:
+Design → Cylinder → Printing → Lamination → Slitting → QC → Packing → Delivery
+
+Each stage should track:
+- Stage name
+- Start time
+- End time
+- Status: Waiting, In Progress, Done, Skipped, On Hold
+- Responsible user
+- Machine
+- Delay reason
+- Waste quantity
+- Actual output quantity
+- Notes
+
+7. Production Dashboard
+Show:
+- Total active jobs
+- Jobs delayed
+- Jobs completed today
+- Jobs by production line
+- Jobs by stage
+- Urgent jobs
+- Machine load
+- Orders due today
+- Orders due this week
+
+Use cards, tables, filters, and charts.
+
+8. Job Board / Kanban
+Create Kanban board grouped by current production stage.
+Allow drag and drop between stages.
+When a job moves to a new stage, create a stage log.
+
+9. Machine Management
+Fields:
+- Machine name
+- Production line
+- Status: Available, Running, Maintenance, Stopped
+- Current job
+- Operator
+- Notes
+
+10. Inventory Lite
+Track raw materials:
+- Material name
+- Category
+- Unit
+- Current quantity
+- Minimum quantity
+- Supplier
+- Cost per unit
+
+Allow material consumption per job.
+
+11. Job Costing Lite
+For each job calculate:
+- Material cost
+- Machine cost
+- Labor cost
+- Outsourcing cost
+- Waste cost
+- Total estimated cost
+- Actual cost
+- Selling price
+- Gross profit
+- Gross margin percentage
+
+12. Quality Control
+QC checklist for each job:
+- Color accuracy
+- Size accuracy
+- Material quality
+- Printing defects
+- Finishing quality
+- Packing quality
+- Final approval
+
+QC result:
+- Passed
+- Rework
+- Rejected
+
+13. Reports
+Create report pages:
+- Production performance
+- Delayed jobs
+- Waste report
+- Machine utilization
+- Job profitability
+- Sales order status
+- QC rejection report
+
+14. UI Requirements
+Use a clean professional industrial dashboard design.
+Primary colors:
+- Red: #D32F2F
+- Dark: #1F1F1F
+- White
+- Light gray
+
+Layout:
+- Sidebar navigation
+- Top bar
+- Dashboard cards
+- Data tables
+- Status badges
+- Kanban board
+- Forms in modals or pages
+
+15. Demo Data
+Seed the database with realistic demo data:
+- 10 customers
+- 20 quotations
+- 15 sales orders
+- 20 job orders
+- 8 machines
+- 30 raw materials
+- Production stages for all workflows
+
+16. Important Business Logic
+- No job order can start production before design/finalizer approval.
+- Each job must follow the correct workflow based on production line.
+- Moving a job stage must save timestamp and responsible user.
+- If delivery date is past and job not completed, mark it as delayed.
+- If material stock goes below minimum quantity, show alert.
+- QC rejection should move job to rework status.
+- Only Admin, Operations, and Production Manager can edit production workflows.
+- Sales can view job status but cannot see costing details.
+
+Deliverables:
+- Complete working full-stack app
+- Database schema
+- Seed data
+- Login system
+- Role-based permissions
+- Dashboard
+- CRUD pages
+- Kanban tracking
+- Reports
+- Clear README with setup instructions
+
+Start by generating the full project structure, database schema, and core pages. Then implement the app step by step until it runs successfully.

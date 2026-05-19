@@ -1,22 +1,33 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Design Print Production Tracker API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: auth
+  - name: users
+  - name: customers
+  - name: quotations
+  - name: salesOrders
+  - name: jobOrders
+  - name: jobStages
+  - name: machines
+  - name: materials
+  - name: jobCosting
+  - name: qc
+  - name: dashboard
+  - name: reports
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,987 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Auth
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+
+  # Users
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      operationId: createUser
+      tags: [users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      operationId: getUser
+      tags: [users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateUser
+      tags: [users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      operationId: deleteUser
+      tags: [users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Customers
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    patch:
+      operationId: updateCustomer
+      tags: [customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+    delete:
+      operationId: deleteCustomer
+      tags: [customers]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Quotations
+  /quotations:
+    get:
+      operationId: listQuotations
+      tags: [quotations]
+      responses:
+        "200":
+          description: List of quotations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quotation"
+    post:
+      operationId: createQuotation
+      tags: [quotations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuotationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quotation"
+
+  /quotations/{id}:
+    get:
+      operationId: getQuotation
+      tags: [quotations]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Quotation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quotation"
+    patch:
+      operationId: updateQuotation
+      tags: [quotations]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuotationUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quotation"
+    delete:
+      operationId: deleteQuotation
+      tags: [quotations]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /quotations/{id}/convert:
+    post:
+      operationId: convertQuotationToOrder
+      tags: [quotations]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Sales order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+
+  # Sales Orders
+  /sales-orders:
+    get:
+      operationId: listSalesOrders
+      tags: [salesOrders]
+      responses:
+        "200":
+          description: List of sales orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SalesOrder"
+    post:
+      operationId: createSalesOrder
+      tags: [salesOrders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesOrderInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+
+  /sales-orders/{id}:
+    get:
+      operationId: getSalesOrder
+      tags: [salesOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Sales order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+    patch:
+      operationId: updateSalesOrder
+      tags: [salesOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesOrderUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+
+  /sales-orders/{id}/generate-job:
+    post:
+      operationId: generateJobOrder
+      tags: [salesOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Job order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobOrder"
+
+  # Job Orders
+  /job-orders:
+    get:
+      operationId: listJobOrders
+      tags: [jobOrders]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: productionLine
+          in: query
+          schema:
+            type: string
+        - name: priority
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of job orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobOrder"
+    post:
+      operationId: createJobOrder
+      tags: [jobOrders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobOrderInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobOrder"
+
+  /job-orders/{id}:
+    get:
+      operationId: getJobOrder
+      tags: [jobOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job order with stages
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobOrderDetail"
+    patch:
+      operationId: updateJobOrder
+      tags: [jobOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobOrderUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobOrder"
+
+  /job-orders/{id}/advance-stage:
+    post:
+      operationId: advanceJobStage
+      tags: [jobOrders]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StageAdvanceInput"
+      responses:
+        "200":
+          description: Stage advanced
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobOrder"
+
+  # Job Stages
+  /job-orders/{id}/stages:
+    get:
+      operationId: listJobStages
+      tags: [jobStages]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job stages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobStage"
+
+  /job-stages/{id}:
+    patch:
+      operationId: updateJobStage
+      tags: [jobStages]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobStageUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStage"
+
+  # Machines
+  /machines:
+    get:
+      operationId: listMachines
+      tags: [machines]
+      responses:
+        "200":
+          description: List of machines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Machine"
+    post:
+      operationId: createMachine
+      tags: [machines]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MachineInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Machine"
+
+  /machines/{id}:
+    get:
+      operationId: getMachine
+      tags: [machines]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Machine
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Machine"
+    patch:
+      operationId: updateMachine
+      tags: [machines]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MachineUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Machine"
+    delete:
+      operationId: deleteMachine
+      tags: [machines]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Materials / Inventory
+  /materials:
+    get:
+      operationId: listMaterials
+      tags: [materials]
+      responses:
+        "200":
+          description: List of materials
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Material"
+    post:
+      operationId: createMaterial
+      tags: [materials]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MaterialInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Material"
+
+  /materials/{id}:
+    get:
+      operationId: getMaterial
+      tags: [materials]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Material
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Material"
+    patch:
+      operationId: updateMaterial
+      tags: [materials]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MaterialUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Material"
+    delete:
+      operationId: deleteMaterial
+      tags: [materials]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Job Costing
+  /job-orders/{id}/costing:
+    get:
+      operationId: getJobCosting
+      tags: [jobCosting]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job costing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobCosting"
+    put:
+      operationId: upsertJobCosting
+      tags: [jobCosting]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobCostingInput"
+      responses:
+        "200":
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobCosting"
+
+  # QC
+  /job-orders/{id}/qc:
+    get:
+      operationId: getQCChecklist
+      tags: [qc]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: QC checklist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QCChecklist"
+    put:
+      operationId: upsertQCChecklist
+      tags: [qc]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QCChecklistInput"
+      responses:
+        "200":
+          description: Upserted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QCChecklist"
+
+  # Dashboard
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/jobs-by-line:
+    get:
+      operationId: getJobsByLine
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Jobs grouped by production line
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GroupCount"
+
+  /dashboard/jobs-by-stage:
+    get:
+      operationId: getJobsByStage
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Jobs grouped by current stage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GroupCount"
+
+  /dashboard/urgent-jobs:
+    get:
+      operationId: getUrgentJobs
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Urgent and very urgent jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobOrder"
+
+  /dashboard/delayed-jobs:
+    get:
+      operationId: getDelayedJobs
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Delayed jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobOrder"
+
+  /dashboard/due-today:
+    get:
+      operationId: getJobsDueToday
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Jobs due today
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobOrder"
+
+  /dashboard/machine-load:
+    get:
+      operationId: getMachineLoad
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Machine utilization
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MachineLoad"
+
+  # Reports
+  /reports/production-performance:
+    get:
+      operationId: getProductionPerformance
+      tags: [reports]
+      responses:
+        "200":
+          description: Production performance report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductionPerformanceReport"
+
+  /reports/waste:
+    get:
+      operationId: getWasteReport
+      tags: [reports]
+      responses:
+        "200":
+          description: Waste report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WasteReportItem"
+
+  /reports/qc-rejection:
+    get:
+      operationId: getQCRejectionReport
+      tags: [reports]
+      responses:
+        "200":
+          description: QC rejection report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QCRejectionItem"
+
+  /reports/job-profitability:
+    get:
+      operationId: getJobProfitabilityReport
+      tags: [reports]
+      responses:
+        "200":
+          description: Job profitability report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/JobProfitabilityItem"
+
+  /reports/machine-utilization:
+    get:
+      operationId: getMachineUtilizationReport
+      tags: [reports]
+      responses:
+        "200":
+          description: Machine utilization report
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MachineUtilizationItem"
+
+  /reports/low-stock:
+    get:
+      operationId: getLowStockAlerts
+      tags: [reports]
+      responses:
+        "200":
+          description: Materials below minimum quantity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Material"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +1026,842 @@ components:
       required:
         - status
 
+    LoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+
+    User:
+      type: object
+      required: [id, username, name, role, isActive, createdAt]
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: ["string", "null"]
+        role:
+          type: string
+          enum: [admin, sales, operations, designer, finalizer, production_manager, machine_operator, qc, warehouse, finance, delivery]
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+
+    UserInput:
+      type: object
+      required: [username, password, name, role]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, sales, operations, designer, finalizer, production_manager, machine_operator, qc, warehouse, finance, delivery]
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        password:
+          type: string
+
+    Customer:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        companyName:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        whatsapp:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        customerType:
+          type: ["string", "null"]
+        source:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    CustomerInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        companyName:
+          type: string
+        phone:
+          type: string
+        whatsapp:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        customerType:
+          type: string
+        source:
+          type: string
+        notes:
+          type: string
+
+    CustomerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        companyName:
+          type: string
+        phone:
+          type: string
+        whatsapp:
+          type: string
+        email:
+          type: string
+        address:
+          type: string
+        customerType:
+          type: string
+        source:
+          type: string
+        notes:
+          type: string
+
+    Quotation:
+      type: object
+      required: [id, quotationNumber, customerId, productType, quantity, unitPrice, totalPrice, status, createdAt]
+      properties:
+        id:
+          type: integer
+        quotationNumber:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: ["string", "null"]
+        productType:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        totalPrice:
+          type: number
+        paymentTerms:
+          type: ["string", "null"]
+        deliveryDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [draft, sent, approved, rejected]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    QuotationInput:
+      type: object
+      required: [customerId, productType, quantity, unitPrice]
+      properties:
+        customerId:
+          type: integer
+        productType:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        paymentTerms:
+          type: string
+        deliveryDate:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+
+    QuotationUpdate:
+      type: object
+      properties:
+        productType:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        paymentTerms:
+          type: string
+        deliveryDate:
+          type: string
+        status:
+          type: string
+        notes:
+          type: string
+
+    SalesOrder:
+      type: object
+      required: [id, orderNumber, customerId, productType, quantity, orderStatus, paymentStatus, createdAt]
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: ["string", "null"]
+        quotationId:
+          type: ["integer", "null"]
+        quotationNumber:
+          type: ["string", "null"]
+        productType:
+          type: string
+        quantity:
+          type: integer
+        deliveryDate:
+          type: ["string", "null"]
+        paymentStatus:
+          type: string
+          enum: [unpaid, partial, paid]
+        orderStatus:
+          type: string
+          enum: [pending, confirmed, in_production, completed, delivered, cancelled]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    SalesOrderInput:
+      type: object
+      required: [customerId, productType, quantity]
+      properties:
+        customerId:
+          type: integer
+        quotationId:
+          type: integer
+        productType:
+          type: string
+        quantity:
+          type: integer
+        deliveryDate:
+          type: string
+        paymentStatus:
+          type: string
+        orderStatus:
+          type: string
+        notes:
+          type: string
+
+    SalesOrderUpdate:
+      type: object
+      properties:
+        productType:
+          type: string
+        quantity:
+          type: integer
+        deliveryDate:
+          type: string
+        paymentStatus:
+          type: string
+        orderStatus:
+          type: string
+        notes:
+          type: string
+
+    JobOrder:
+      type: object
+      required: [id, jobNumber, customerId, productType, productionLine, quantity, priority, status, currentStage, createdAt]
+      properties:
+        id:
+          type: integer
+        jobNumber:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: ["string", "null"]
+        salesOrderId:
+          type: ["integer", "null"]
+        productType:
+          type: string
+        productionLine:
+          type: string
+          enum: [offset_printing, silk_screen, plastic_bags, corrugated_carton, flowpack]
+        quantity:
+          type: integer
+        designFileStatus:
+          type: string
+          enum: [pending, in_review, approved, rejected]
+        requiredDeliveryDate:
+          type: ["string", "null"]
+        priority:
+          type: string
+          enum: [normal, urgent, very_urgent]
+        currentStage:
+          type: ["string", "null"]
+        assignedDepartment:
+          type: ["string", "null"]
+        assignedUserId:
+          type: ["integer", "null"]
+        assignedUserName:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, in_progress, on_hold, completed, delivered, cancelled]
+        isDelayed:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    JobOrderDetail:
+      type: object
+      required: [id, jobNumber, customerId, productType, productionLine, quantity, priority, status, currentStage, createdAt, stages]
+      properties:
+        id:
+          type: integer
+        jobNumber:
+          type: string
+        customerId:
+          type: integer
+        customerName:
+          type: ["string", "null"]
+        salesOrderId:
+          type: ["integer", "null"]
+        productType:
+          type: string
+        productionLine:
+          type: string
+        quantity:
+          type: integer
+        designFileStatus:
+          type: string
+        requiredDeliveryDate:
+          type: ["string", "null"]
+        priority:
+          type: string
+        currentStage:
+          type: ["string", "null"]
+        assignedDepartment:
+          type: ["string", "null"]
+        assignedUserId:
+          type: ["integer", "null"]
+        assignedUserName:
+          type: ["string", "null"]
+        status:
+          type: string
+        isDelayed:
+          type: boolean
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/JobStage"
+
+    JobOrderInput:
+      type: object
+      required: [customerId, productType, productionLine, quantity, priority]
+      properties:
+        customerId:
+          type: integer
+        salesOrderId:
+          type: integer
+        productType:
+          type: string
+        productionLine:
+          type: string
+          enum: [offset_printing, silk_screen, plastic_bags, corrugated_carton, flowpack]
+        quantity:
+          type: integer
+        designFileStatus:
+          type: string
+        requiredDeliveryDate:
+          type: string
+        priority:
+          type: string
+          enum: [normal, urgent, very_urgent]
+        assignedDepartment:
+          type: string
+        assignedUserId:
+          type: integer
+        notes:
+          type: string
+
+    JobOrderUpdate:
+      type: object
+      properties:
+        productType:
+          type: string
+        quantity:
+          type: integer
+        designFileStatus:
+          type: string
+        requiredDeliveryDate:
+          type: string
+        priority:
+          type: string
+        currentStage:
+          type: string
+        assignedDepartment:
+          type: string
+        assignedUserId:
+          type: integer
+        status:
+          type: string
+        notes:
+          type: string
+
+    StageAdvanceInput:
+      type: object
+      required: [stageName]
+      properties:
+        stageName:
+          type: string
+        notes:
+          type: string
+        delayReason:
+          type: string
+
+    JobStage:
+      type: object
+      required: [id, jobOrderId, stageName, stageOrder, status]
+      properties:
+        id:
+          type: integer
+        jobOrderId:
+          type: integer
+        stageName:
+          type: string
+        stageOrder:
+          type: integer
+        status:
+          type: string
+          enum: [waiting, in_progress, done, skipped, on_hold]
+        startTime:
+          type: ["string", "null"]
+        endTime:
+          type: ["string", "null"]
+        responsibleUserId:
+          type: ["integer", "null"]
+        responsibleUserName:
+          type: ["string", "null"]
+        machineId:
+          type: ["integer", "null"]
+        machineName:
+          type: ["string", "null"]
+        delayReason:
+          type: ["string", "null"]
+        wasteQuantity:
+          type: ["number", "null"]
+        actualOutput:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+
+    JobStageUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        responsibleUserId:
+          type: integer
+        machineId:
+          type: integer
+        delayReason:
+          type: string
+        wasteQuantity:
+          type: number
+        actualOutput:
+          type: number
+        notes:
+          type: string
+
+    Machine:
+      type: object
+      required: [id, name, productionLine, status, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        productionLine:
+          type: string
+        status:
+          type: string
+          enum: [available, running, maintenance, stopped]
+        currentJobId:
+          type: ["integer", "null"]
+        currentJobNumber:
+          type: ["string", "null"]
+        operatorId:
+          type: ["integer", "null"]
+        operatorName:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+
+    MachineInput:
+      type: object
+      required: [name, productionLine]
+      properties:
+        name:
+          type: string
+        productionLine:
+          type: string
+        status:
+          type: string
+        operatorId:
+          type: integer
+        notes:
+          type: string
+
+    MachineUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        productionLine:
+          type: string
+        status:
+          type: string
+        currentJobId:
+          type: integer
+        operatorId:
+          type: integer
+        notes:
+          type: string
+
+    Material:
+      type: object
+      required: [id, name, category, unit, currentQuantity, minimumQuantity, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        currentQuantity:
+          type: number
+        minimumQuantity:
+          type: number
+        supplier:
+          type: ["string", "null"]
+        costPerUnit:
+          type: ["number", "null"]
+        isLowStock:
+          type: boolean
+        createdAt:
+          type: string
+
+    MaterialInput:
+      type: object
+      required: [name, category, unit, currentQuantity, minimumQuantity]
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        currentQuantity:
+          type: number
+        minimumQuantity:
+          type: number
+        supplier:
+          type: string
+        costPerUnit:
+          type: number
+
+    MaterialUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        unit:
+          type: string
+        currentQuantity:
+          type: number
+        minimumQuantity:
+          type: number
+        supplier:
+          type: string
+        costPerUnit:
+          type: number
+
+    JobCosting:
+      type: object
+      required: [id, jobOrderId]
+      properties:
+        id:
+          type: integer
+        jobOrderId:
+          type: integer
+        materialCost:
+          type: ["number", "null"]
+        machineCost:
+          type: ["number", "null"]
+        laborCost:
+          type: ["number", "null"]
+        outsourcingCost:
+          type: ["number", "null"]
+        wasteCost:
+          type: ["number", "null"]
+        totalEstimatedCost:
+          type: ["number", "null"]
+        actualCost:
+          type: ["number", "null"]
+        sellingPrice:
+          type: ["number", "null"]
+        grossProfit:
+          type: ["number", "null"]
+        grossMarginPercent:
+          type: ["number", "null"]
+
+    JobCostingInput:
+      type: object
+      properties:
+        materialCost:
+          type: number
+        machineCost:
+          type: number
+        laborCost:
+          type: number
+        outsourcingCost:
+          type: number
+        wasteCost:
+          type: number
+        totalEstimatedCost:
+          type: number
+        actualCost:
+          type: number
+        sellingPrice:
+          type: number
+
+    QCChecklist:
+      type: object
+      required: [id, jobOrderId, result]
+      properties:
+        id:
+          type: integer
+        jobOrderId:
+          type: integer
+        colorAccuracy:
+          type: ["boolean", "null"]
+        sizeAccuracy:
+          type: ["boolean", "null"]
+        materialQuality:
+          type: ["boolean", "null"]
+        printingDefects:
+          type: ["boolean", "null"]
+        finishingQuality:
+          type: ["boolean", "null"]
+        packingQuality:
+          type: ["boolean", "null"]
+        finalApproval:
+          type: ["boolean", "null"]
+        result:
+          type: string
+          enum: [passed, rework, rejected, pending]
+        notes:
+          type: ["string", "null"]
+        inspectedBy:
+          type: ["string", "null"]
+        inspectedAt:
+          type: ["string", "null"]
+
+    QCChecklistInput:
+      type: object
+      properties:
+        colorAccuracy:
+          type: boolean
+        sizeAccuracy:
+          type: boolean
+        materialQuality:
+          type: boolean
+        printingDefects:
+          type: boolean
+        finishingQuality:
+          type: boolean
+        packingQuality:
+          type: boolean
+        finalApproval:
+          type: boolean
+        result:
+          type: string
+          enum: [passed, rework, rejected, pending]
+        notes:
+          type: string
+
+    DashboardSummary:
+      type: object
+      required: [totalActiveJobs, delayedJobs, completedToday, urgentJobs, ordersThisWeek, totalCustomers, totalQuotations, pendingOrders]
+      properties:
+        totalActiveJobs:
+          type: integer
+        delayedJobs:
+          type: integer
+        completedToday:
+          type: integer
+        urgentJobs:
+          type: integer
+        ordersThisWeek:
+          type: integer
+        totalCustomers:
+          type: integer
+        totalQuotations:
+          type: integer
+        pendingOrders:
+          type: integer
+
+    GroupCount:
+      type: object
+      required: [name, count]
+      properties:
+        name:
+          type: string
+        count:
+          type: integer
+
+    MachineLoad:
+      type: object
+      required: [id, name, productionLine, status]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        productionLine:
+          type: string
+        status:
+          type: string
+        currentJobNumber:
+          type: ["string", "null"]
+        operatorName:
+          type: ["string", "null"]
+
+    ProductionPerformanceReport:
+      type: object
+      required: [totalJobs, completedJobs, delayedJobs, onTimeRate, byLine]
+      properties:
+        totalJobs:
+          type: integer
+        completedJobs:
+          type: integer
+        delayedJobs:
+          type: integer
+        onTimeRate:
+          type: number
+        byLine:
+          type: array
+          items:
+            $ref: "#/components/schemas/GroupCount"
+
+    WasteReportItem:
+      type: object
+      required: [jobNumber, stageName, wasteQuantity]
+      properties:
+        jobNumber:
+          type: string
+        stageName:
+          type: string
+        wasteQuantity:
+          type: number
+        productionLine:
+          type: string
+
+    QCRejectionItem:
+      type: object
+      required: [jobNumber, result, productionLine]
+      properties:
+        jobNumber:
+          type: string
+        result:
+          type: string
+        productionLine:
+          type: string
+        notes:
+          type: ["string", "null"]
+
+    JobProfitabilityItem:
+      type: object
+      required: [jobNumber, productType, sellingPrice, actualCost, grossProfit, grossMarginPercent]
+      properties:
+        jobNumber:
+          type: string
+        productType:
+          type: string
+        sellingPrice:
+          type: number
+        actualCost:
+          type: number
+        grossProfit:
+          type: number
+        grossMarginPercent:
+          type: number
+
+    MachineUtilizationItem:
+      type: object
+      required: [machineName, productionLine, status, jobsCompleted]
+      properties:
+        machineName:
+          type: string
+        productionLine:
+          type: string
+        status:
+          type: string
+        jobsCompleted:
+          type: integer
